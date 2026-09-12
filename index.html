@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PAMI COSTUME</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff;color:#171717;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Yu Gothic",Arial,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:22px 12px 50px}
+h1{font-size:21px;letter-spacing:.06em;margin:0}.sub{font-size:12px;color:#777;margin:5px 0 18px}
+.filters{display:flex;gap:7px;overflow:auto;padding-bottom:14px}
+.filters button{border:1px solid #e5e5e5;background:#fff;border-radius:99px;padding:8px 12px;white-space:nowrap}
+.filters button.on{background:#171717;color:#fff;border-color:#171717}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.card{min-width:0}.photo{width:100%;aspect-ratio:3/4;object-fit:cover;background:#eee;border-radius:8px;display:block}
+.placeholder{aspect-ratio:3/4;border-radius:8px;background:linear-gradient(145deg,#eee,#ddd);display:flex;align-items:center;justify-content:center;color:#888;font-size:12px}
+.name{font-size:12px;font-weight:600;margin:6px 1px 3px;overflow-wrap:anywhere}
+.tags{display:flex;gap:3px;flex-wrap:wrap}.tag{font-size:9px;background:#f3f3f3;color:#666;padding:3px 5px;border-radius:99px}
+.note{margin-top:28px;font-size:11px;color:#999}
+@media(max-width:330px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Very old/small browsers: readable fallback */
+@media(max-width:220px){.grid{display:block}.card{margin-bottom:14px}.placeholder,.photo{width:100%;height:auto;min-height:120px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>PAMI COSTUME</h1>
+<div class="sub">撮影可能な手持ち衣装一覧</div>
+
+<div class="filters" id="filters">
+<button class="on" data-tag="all">すべて</button>
+<button data-tag="fullback">フルバック</button>
+<button data-tag="tback">Tバック</button>
+<button data-tag="character">キャラクター</button>
+<button data-tag="other">その他</button>
+</div>
+
+<div class="grid" id="grid">
+<!-- カードは最初からHTMLに存在するので、JavaScript非対応でも一覧が見えます -->
+<article class="card" data-tags="character tback"><div class="placeholder">PHOTO</div><div class="name">水着キサキ</div><div class="tags"><span class="tag">キャラクター</span><span class="tag">Tバック</span></div></article>
+<article class="card" data-tags="character"><div class="placeholder">PHOTO</div><div class="name">リリス</div><div class="tags"><span class="tag">キャラクター</span></div></article>
+<article class="card" data-tags="tback"><div class="placeholder">PHOTO</div><div class="name">ブラックビキニ</div><div class="tags"><span class="tag">Tバック</span></div></article>
+<article class="card" data-tags="fullback"><div class="placeholder">PHOTO</div><div class="name">競泳水着</div><div class="tags"><span class="tag">フルバック</span></div></article>
+<article class="card" data-tags="other"><div class="placeholder">PHOTO</div><div class="name">白ワンピース</div><div class="tags"><span class="tag">その他</span></div></article>
+<article class="card" data-tags="character fullback"><div class="placeholder">PHOTO</div><div class="name">セーラーサターン</div><div class="tags"><span class="tag">キャラクター</span><span class="tag">フルバック</span></div></article>
+</div>
+
+<div class="note">掲載内容は随時更新します。</div>
+</div>
+
+<script>
+(function(){
+ var buttons=document.querySelectorAll('#filters button');
+ var cards=document.querySelectorAll('.card');
+ for(var i=0;i<buttons.length;i++){
+  buttons[i].onclick=function(){
+   var tag=this.getAttribute('data-tag');
+   for(var j=0;j<buttons.length;j++) buttons[j].className='';
+   this.className='on';
+   for(var k=0;k<cards.length;k++){
+    var tags=cards[k].getAttribute('data-tags')||'';
+    cards[k].style.display=(tag==='all'||(' '+tags+' ').indexOf(' '+tag+' ')>=0)?'block':'none';
+   }
+  };
+ }
+})();
+</script>
+</body>
+</html>
