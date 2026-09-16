@@ -1,0 +1,1 @@
+New costume entries (101+) are intended to use external image files under images/ and metadata in data.js. This avoids rewriting the legacy 8MB embedded-image index for every addition.
