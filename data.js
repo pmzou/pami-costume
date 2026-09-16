@@ -6,7 +6,7 @@
   else window.COSTUMES=[];
   window.COSTUMES.push(
     {"id":101,"name":"No.101｜REALIZE 肌色×黒メッシュ水着","tags":["fullback"],"visible":true,"image":"images/101.jpg","imageVersion":1},
-    {"id":102,"name":"No.102｜REALIZE 青×白水着","tags":["fullback"],"visible":true,"image":"images/102.jpg","imageVersion":2}
+    {"id":102,"name":"No.102｜REALIZE 青×白水着","tags":["fullback"],"visible":true,"image":"images/102.jpg","imageVersion":3}
   );
   var grid=document.querySelector('.grid');
   if(grid){
