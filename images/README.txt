@@ -1,0 +1,1 @@
+Costume catalog images are stored in this directory. New images use their permanent costume ID as the filename (for example, 101.jpg).
