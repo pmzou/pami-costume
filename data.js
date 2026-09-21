@@ -40,6 +40,17 @@
     var item=window.COSTUMES[j], el=cards[j];
     if(item.visible===false || item.visible==='false'){el.style.display='none';continue;}
     var n=el.querySelector('.name'); if(n)n.textContent=item.name||'';
-    var t=el.querySelector('.tags'); if(t){t.innerHTML=''; var tags=Array.isArray(item.tags)?item.tags:(item.tags?[item.tags]:[]); for(var k=0;k<tags.length;k++){var s=document.createElement('span');s.className='tag';s.textContent=({fullback:'フルバック',tback:'Tバック',character:'キャラクター',other:'その他'})[tags[k]]||tags[k];t.appendChild(s);}}
+    var normTags=Array.isArray(item.tags)?item.tags:(item.tags?[item.tags]:[]); el.setAttribute('data-tags',normTags.join(' '));
+    var t=el.querySelector('.tags'); if(t){t.innerHTML=''; var tags=normTags; for(var k=0;k<tags.length;k++){var s=document.createElement('span');s.className='tag';s.textContent=({fullback:'フルバック',tback:'Tバック',character:'キャラクター',other:'その他'})[tags[k]]||tags[k];t.appendChild(s);}}
   }
+  // Bind filters again so dynamically added cards participate too.
+  var buttons=document.querySelectorAll('.filters button');
+  for(var b=0;b<buttons.length;b++)(function(btn){btn.onclick=function(){
+    for(var q=0;q<buttons.length;q++)buttons[q].classList.remove('on'); btn.classList.add('on');
+    var key=btn.getAttribute('data-filter')||btn.getAttribute('data-tag')||'';
+    var label=(btn.textContent||'').trim();
+    if(!key){key=label==='すべて'?'all':label==='フルバック'?'fullback':label==='Tバック'?'tback':label==='キャラクター'?'character':label==='その他'?'other':'';}
+    var all=document.querySelectorAll('.card');
+    for(var z=0;z<all.length;z++){var it=window.COSTUMES[z]||{}, ts=Array.isArray(it.tags)?it.tags:(it.tags?[it.tags]:[]), visible=!(it.visible===false||it.visible==='false'); all[z].style.display=visible&&(key==='all'||key===''||ts.indexOf(key)>=0)?'':'none';}
+  };})(buttons[b]);
 })();
