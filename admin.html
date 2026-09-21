@@ -25,7 +25,7 @@ button{font:inherit;color:var(--ink);-webkit-text-fill-color:var(--ink)}.add{bor
 <button class="chip" data-tag="fullback">フルバック</button><button class="chip" data-tag="tback">Tバック</button><button class="chip" data-tag="character">キャラクター</button><button class="chip" data-tag="other">その他</button>
 </div>
 <div class="actions"><button class="cancel" id="cancel">キャンセル</button><button class="save" id="save">追加</button></div><div class="actions" id="editActions" style="display:none"><button class="cancel" id="hideBtn">非表示</button><button class="cancel" id="replaceBtn">写真差替え</button><button class="cancel" id="deleteBtn" style="color:#C62828">削除</button></div>
-<div class="note" id="note">現在は管理UIの実機確認段階です。保存接続は次の工程で有効化します。</div>
+<div class="note" id="note">管理画面からiPhoneショートカットへ接続します。</div>
 </div></div>
 <script>
 var costumes=[]; var editing=null;
@@ -41,15 +41,15 @@ function render(){
 get('custom-data.json').then(x=>{costumes=x;render()});
 function setChips(tags){var a=Array.isArray(tags)?tags:(tags?[tags]:[]);document.querySelectorAll('.chip').forEach(b=>b.classList.toggle('on',a.includes(b.dataset.tag)))}
 function openAdd(){editing=null;sheetTitle.textContent='衣装を追加';name.value='';photo.value='';setChips([]);save.textContent='追加';editActions.style.display='none';note.textContent='追加はiPhoneショートカットに接続する工程です。';sheet.classList.add('on')}
-function openEdit(c){editing=c;sheetTitle.textContent='No.'+String(c.id).padStart(3,'0')+' を編集';name.value=(c.name||'').replace(/^No\.\d+｜/,'');setChips(c.tags);save.textContent='変更を保存';editActions.style.display='flex';note.textContent='名前・タグ・写真・表示状態をここから管理できるよう接続します。';sheet.classList.add('on')}
+function openEdit(c){editing=c;sheetTitle.textContent='No.'+String(c.id).padStart(3,'0')+' を編集';name.value=(c.name||'').replace(/^No\.\[?\d+\]?｜/,'');setChips(c.tags);save.textContent='変更を保存';editActions.style.display='flex';note.textContent='名前・タグを変更して「変更を保存」。';sheet.classList.add('on')}
 search.oninput=render;open.onclick=openAdd;cancel.onclick=()=>sheet.classList.remove('on');
 document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>b.classList.toggle('on'));
 save.onclick=()=>{
- if(!editing){note.textContent='追加はショートカット接続後に有効になります。';return}
+ if(!editing){note.textContent='追加は既存の追加ショートカットに接続予定です。';return}
  var tags=[...document.querySelectorAll('.chip.on')].map(b=>b.dataset.tag);
  var clean=(name.value||'').trim(); if(!clean){note.textContent='衣装名を入力してね';return}
  var payload={action:'edit',id:Number(editing.id),name:clean,tags:tags};
- var url='shortcuts://run-shortcut?name='+encodeURIComponent('PAMI Costume Admin')+'&input=text&text='+encodeURIComponent(JSON.stringify(payload));
+ var url='shortcuts://run-shortcut?name='+encodeURIComponent('PAMI Costume Admin 開発用')+'&input=text&text='+encodeURIComponent(JSON.stringify(payload));
  note.textContent='ショートカットへ送信中…'; location.href=url;
 };
 </script></body></html>
