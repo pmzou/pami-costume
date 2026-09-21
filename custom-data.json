@@ -1,7 +1,1 @@
-[
-  {"id":101,"tags":["fullback"],"imageVersion":1,"name":"No.101｜REALIZE 肌色×黒メッシュ水着","image":"images/101.jpg","visible":true},
-  {"id":102,"tags":["fullback"],"imageVersion":4,"name":"No.102｜REALIZE 青×白水着","image":"images/102.jpg","visible":true},
-  {"id":103,"tags":["tback"],"imageVersion":1,"name":"No.103｜ビキニ　オレンジ","image":"images/103.jpg","visible":true},
-  {"id":104,"imageVersion":1,"tags":["fullback"],"name":"No.104｜水着　オレンジ","image":"images/104.jpg","visible":true},
-  {"id":105,"imageVersion":1,"tags":["fullback"],"name":"No.105｜arena 競泳水着 赤黒","image":"images/105.jpg","visible":true}
-]
+[{"id":101,"tags":["fullback"],"imageVersion":1,"name":"No.101｜REALIZE 肌色×黒メッシュ水着","image":"images\/101.jpg","visible":true},{"id":102,"tags":["fullback"],"imageVersion":4,"name":"No.102｜REALIZE 青×白水着","image":"images\/102.jpg","visible":true},{"id":103,"tags":["tback"],"imageVersion":1,"name":"No.103｜ビキニ　オレンジ","image":"images\/103.jpg","visible":true},{"id":104,"imageVersion":1,"tags":["fullback"],"name":"No.104｜水着　オレンジ","image":"images\/104.jpg","visible":true},{"id":105,"imageVersion":1,"tags":["tback","other"],"name":"No.105｜arena 競泳水着 赤黒","image":"images\/105.jpg","visible":true}]
