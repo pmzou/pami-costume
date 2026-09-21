@@ -1,0 +1,45 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PAMI ADMIN</title><style>
+:root{--o:#F07828;--ot:#FEF2EA;--ink:#202124;--mut:#74777D;--bd:#E8E9EB;--tag:#F4F4F5}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#fff}
+main{max-width:620px;margin:auto;padding:18px 14px 60px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}h1{font-size:22px;margin:0}.sub{font-size:12px;color:var(--mut);margin-top:5px}
+button{font:inherit}.add{border:0;border-radius:10px;background:var(--o);color:var(--ink);font-weight:700;padding:11px 14px;min-height:44px}
+.search{width:100%;border:0;background:#f7f7f8;border-radius:10px;padding:13px;margin:18px 0 12px;font-size:16px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 8px}.card{min-width:0}.pic{position:relative;aspect-ratio:3/4;border-radius:7px;overflow:hidden;background:#f1f1f1}.pic img{width:100%;height:100%;object-fit:cover}
+.check{position:absolute;right:7px;top:7px;width:24px;height:24px;border-radius:6px;background:#fff;border:1px solid #ddd;display:grid;place-items:center;color:var(--o);font-weight:900;font-size:18px}
+.name{font-size:11px;font-weight:600;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tags{font-size:8px;color:var(--mut);margin-top:6px}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.25);display:none;align-items:flex-end}.sheet.on{display:flex}.panel{width:100%;max-width:620px;margin:auto;background:#fff;border-radius:18px 18px 0 0;padding:18px 16px calc(22px + env(safe-area-inset-bottom))}
+.panel h2{margin:0 0 14px;font-size:18px}.field{display:block;margin:12px 0;font-size:12px;color:var(--mut)}.field input{display:block;width:100%;margin-top:5px;border:1px solid var(--bd);border-radius:10px;padding:12px;font-size:16px;color:var(--ink)}
+.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid var(--bd);background:#fff;border-radius:999px;padding:9px 12px}.chip.on{background:var(--ot);border-color:transparent;font-weight:700}
+.actions{display:flex;gap:8px;margin-top:18px}.actions button{min-height:44px;border-radius:10px;padding:10px 14px}.cancel{background:#fff;border:1px solid var(--bd);flex:1}.save{background:var(--o);border:0;font-weight:700;flex:2}
+.note{font-size:11px;color:var(--mut);line-height:1.5;margin-top:12px}
+</style></head><body><main>
+<div class="top"><div><h1>PAMI ADMIN</h1><div class="sub">衣装を追加・編集</div></div><button class="add" id="open">＋ 追加</button></div>
+<input class="search" id="search" placeholder="検索">
+<div class="grid" id="grid"></div>
+</main>
+<div class="sheet" id="sheet"><div class="panel"><h2>衣装を追加</h2>
+<label class="field">写真<input id="photo" type="file" accept="image/*"></label>
+<label class="field">衣装名<input id="name" placeholder="例：REALIZE 黒×白水着"></label>
+<div class="field">タグ</div><div class="chips" id="chips">
+<button class="chip" data-tag="fullback">フルバック</button><button class="chip" data-tag="tback">Tバック</button><button class="chip" data-tag="character">キャラクター</button><button class="chip" data-tag="other">その他</button>
+</div>
+<div class="actions"><button class="cancel" id="cancel">キャンセル</button><button class="save" id="save">追加</button></div>
+<div class="note" id="note">現在は管理UIの実機確認段階です。保存接続は次の工程で有効化します。</div>
+</div></div>
+<script>
+var costumes=[];
+function get(url){return fetch(url+'?v='+Date.now()).then(r=>r.json())}
+function render(){
+ var q=document.getElementById('search').value.toLowerCase(),g=document.getElementById('grid');g.innerHTML='';
+ costumes.filter(c=>c.visible!==false&&(!q||c.name.toLowerCase().includes(q))).forEach(c=>{
+  var el=document.createElement('div');el.className='card';
+  el.innerHTML='<div class="pic"><img src="'+c.image+'?v='+(c.imageVersion||1)+'"><span class="check"></span></div><div class="name">'+c.name+'</div><div class="tags">'+(c.tags||[]).join(' · ')+'</div>';
+  var ck=el.querySelector('.check');ck.onclick=()=>ck.textContent=ck.textContent?'':'✓';g.appendChild(el);
+ });
+}
+get('custom-data.json').then(x=>{costumes=x;render()});
+search.oninput=render;open.onclick=()=>sheet.classList.add('on');cancel.onclick=()=>sheet.classList.remove('on');
+document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>b.classList.toggle('on'));
+save.onclick=()=>{note.textContent='入力UIはOK。安全な保存接続を有効化すると、ここからサイト更新まで自動になります。'};
+</script></body></html>
