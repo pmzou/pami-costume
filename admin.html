@@ -3,53 +3,20 @@
 :root{--o:#F07828;--ot:#FEF2EA;--ink:#202124;--mut:#74777D;--bd:#E8E9EB;--tag:#F4F4F5}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;color:var(--ink);background:#fff}
 main{max-width:620px;margin:auto;padding:18px 14px 60px}.top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}h1{font-size:22px;margin:0}.sub{font-size:12px;color:var(--mut);margin-top:5px}
-button{font:inherit;color:var(--ink);-webkit-text-fill-color:var(--ink)}.add{border:0;border-radius:10px;background:var(--o);color:var(--ink);font-weight:700;padding:11px 14px;min-height:44px}
-.search{width:100%;border:0;background:#f7f7f8;border-radius:10px;padding:13px;margin:18px 0 12px;font-size:16px}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 8px}.card{min-width:0}.pic{position:relative;aspect-ratio:3/4;border-radius:7px;overflow:hidden;background:#f1f1f1}.pic img{width:100%;height:100%;object-fit:cover}
-.check{position:absolute;right:7px;top:7px;width:24px;height:24px;border-radius:6px;background:#fff;border:1px solid #ddd;display:grid;place-items:center;color:var(--o);font-weight:900;font-size:18px}
-.name{font-size:11px;font-weight:600;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tags{font-size:8px;color:var(--mut);margin-top:6px}
-.sheet{position:fixed;inset:0;background:rgba(0,0,0,.25);display:none;align-items:flex-end}.sheet.on{display:flex}.panel{width:100%;max-width:620px;margin:auto;background:#fff;border-radius:18px 18px 0 0;padding:18px 16px calc(22px + env(safe-area-inset-bottom))}
-.panel h2{margin:0 0 14px;font-size:18px}.field{display:block;margin:12px 0;font-size:12px;color:var(--mut)}.field input{display:block;width:100%;margin-top:5px;border:1px solid var(--bd);border-radius:10px;padding:12px;font-size:16px;color:var(--ink);-webkit-text-fill-color:var(--ink);opacity:1}.field input::placeholder{color:var(--mut);-webkit-text-fill-color:var(--mut)}
-.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid var(--bd);background:#fff;color:var(--ink);-webkit-text-fill-color:var(--ink);border-radius:999px;padding:9px 12px}.chip.on{background:var(--ot);border-color:transparent;font-weight:700}
-.actions{display:flex;gap:8px;margin-top:18px}.actions button{min-height:44px;border-radius:10px;padding:10px 14px}.cancel{background:#fff;border:1px solid var(--bd);flex:1}.save{background:var(--o);color:var(--ink);-webkit-text-fill-color:var(--ink);border:0;font-weight:700;flex:2}
-.note{font-size:11px;color:var(--mut);line-height:1.5;margin-top:12px}
-</style></head><body><main>
-<div class="top"><div><h1>PAMI ADMIN</h1><div class="sub">衣装を追加・編集</div></div><button class="add" id="open">＋ 追加</button></div>
-<input class="search" id="search" placeholder="検索">
-<div class="grid" id="grid"></div>
-</main>
-<div class="sheet" id="sheet"><div class="panel"><h2 id="sheetTitle">衣装を追加</h2>
-<label class="field">写真<input id="photo" type="file" accept="image/*"></label>
-<label class="field">衣装名<input id="name" placeholder="例：REALIZE 黒×白水着"></label>
-<div class="field">タグ</div><div class="chips" id="chips">
-<button class="chip" data-tag="fullback">フルバック</button><button class="chip" data-tag="tback">Tバック</button><button class="chip" data-tag="character">キャラクター</button><button class="chip" data-tag="other">その他</button>
-</div>
-<div class="actions"><button class="cancel" id="cancel">キャンセル</button><button class="save" id="save">追加</button></div><div class="actions" id="editActions" style="display:none"><button class="cancel" id="hideBtn">非表示</button><button class="cancel" id="replaceBtn">写真差替え</button><button class="cancel" id="deleteBtn" style="color:#C62828">削除</button></div>
-<div class="note" id="note">管理画面からiPhoneショートカットへ接続します。</div>
-</div></div>
+button{font:inherit;color:var(--ink);-webkit-text-fill-color:var(--ink)}.add{border:0;border-radius:10px;background:var(--o);font-weight:700;padding:11px 14px;min-height:44px}
+.search{width:100%;border:0;background:#f7f7f8;border-radius:10px;padding:13px;margin:18px 0 12px;font-size:16px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px 8px}.card{min-width:0}.pic{position:relative;aspect-ratio:3/4;border-radius:7px;overflow:hidden;background:#f1f1f1}.pic img{width:100%;height:100%;object-fit:cover}.check{position:absolute;right:7px;top:7px;width:24px;height:24px;border-radius:6px;background:#fff;border:1px solid #ddd;display:grid;place-items:center;color:var(--o);font-weight:900;font-size:18px}.name{font-size:11px;font-weight:600;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tags{font-size:8px;color:var(--mut);margin-top:6px}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.25);display:none;align-items:flex-end}.sheet.on{display:flex}.panel{width:100%;max-width:620px;margin:auto;background:#fff;border-radius:18px 18px 0 0;padding:18px 16px calc(22px + env(safe-area-inset-bottom))}.panel h2{margin:0 0 14px;font-size:18px}.field{display:block;margin:12px 0;font-size:12px;color:var(--mut)}.field input{display:block;width:100%;margin-top:5px;border:1px solid var(--bd);border-radius:10px;padding:12px;font-size:16px;color:var(--ink);-webkit-text-fill-color:var(--ink);opacity:1}.field input::placeholder{color:var(--mut);-webkit-text-fill-color:var(--mut)}.chips{display:flex;gap:7px;flex-wrap:wrap}.chip{border:1px solid var(--bd);background:#fff;border-radius:999px;padding:9px 12px}.chip.on{background:var(--ot);border-color:transparent;font-weight:700}.actions{display:flex;gap:8px;margin-top:18px}.actions button{min-height:44px;border-radius:10px;padding:10px 14px}.cancel{background:#fff;border:1px solid var(--bd);flex:1}.save{background:var(--o);border:0;font-weight:700;flex:2}.note{font-size:11px;color:var(--mut);line-height:1.5;margin-top:12px}
+</style></head><body><main><div class="top"><div><h1>PAMI ADMIN</h1><div class="sub">衣装を追加・編集</div></div><button class="add" id="open">＋ 追加</button></div><input class="search" id="search" placeholder="検索"><div class="grid" id="grid"></div></main>
+<div class="sheet" id="sheet"><div class="panel"><h2 id="sheetTitle">衣装を追加</h2><label class="field">写真<input id="photo" type="file" accept="image/*"></label><label class="field">衣装名<input id="costumeName" placeholder="例：REALIZE 黒×白水着"></label><div class="field">タグ</div><div class="chips" id="chips"><button class="chip" data-tag="fullback">フルバック</button><button class="chip" data-tag="tback">Tバック</button><button class="chip" data-tag="character">キャラクター</button><button class="chip" data-tag="other">その他</button></div><div class="actions"><button class="cancel" id="cancel">キャンセル</button><button class="save" id="save">追加</button></div><div class="actions" id="editActions" style="display:none"><button class="cancel" id="hideBtn">非表示</button><button class="cancel" id="replaceBtn">写真差替え</button><button class="cancel" id="deleteBtn" style="color:#C62828">削除</button></div><div class="note" id="note">管理画面からiPhoneショートカットへ接続します。</div></div></div>
 <script>
-var costumes=[]; var editing=null;
+const $=id=>document.getElementById(id); let costumes=[],editing=null;
 function get(url){return fetch(url+'?v='+Date.now()).then(r=>r.json())}
-function render(){
- var q=document.getElementById('search').value.toLowerCase(),g=document.getElementById('grid');g.innerHTML='';
- costumes.filter(c=>c.visible!==false&&(!q||c.name.toLowerCase().includes(q))).forEach(c=>{
-  var el=document.createElement('div');el.className='card';
-  el.innerHTML='<div class="pic"><img src="'+c.image+'?v='+(c.imageVersion||1)+'"><span class="check"></span></div><div class="name">'+c.name+'</div><div class="tags">'+(Array.isArray(c.tags)?c.tags:(c.tags?[c.tags]:[])).map(t=>({fullback:'フルバック',tback:'Tバック',character:'キャラクター',other:'その他'})[t]||t).join(' · ')+'</div>';
-  var ck=el.querySelector('.check'); ck.onclick=(e)=>{e.stopPropagation();ck.textContent=ck.textContent?'':'✓'}; el.onclick=()=>openEdit(c); g.appendChild(el);
- });
-}
+function normTags(t){return Array.isArray(t)?t:(t?[t]:[])}
+function render(){let q=$('search').value.toLowerCase(),g=$('grid');g.innerHTML='';costumes.filter(c=>c.visible!==false&&(!q||String(c.name||'').toLowerCase().includes(q))).forEach(c=>{let el=document.createElement('div');el.className='card';el.innerHTML='<div class="pic"><img src="'+c.image+'?v='+(c.imageVersion||1)+'"><span class="check"></span></div><div class="name">'+(c.name||'')+'</div><div class="tags">'+normTags(c.tags).map(t=>({fullback:'フルバック',tback:'Tバック',character:'キャラクター',other:'その他'})[t]||t).join(' · ')+'</div>';let ck=el.querySelector('.check');ck.onclick=e=>{e.stopPropagation();ck.textContent=ck.textContent?'':'✓'};el.onclick=()=>openEdit(c);g.appendChild(el)})}
 get('custom-data.json').then(x=>{costumes=x;render()});
-function setChips(tags){var a=Array.isArray(tags)?tags:(tags?[tags]:[]);document.querySelectorAll('.chip').forEach(b=>b.classList.toggle('on',a.includes(b.dataset.tag)))}
-function openAdd(){editing=null;sheetTitle.textContent='衣装を追加';name.value='';photo.value='';setChips([]);save.textContent='追加';editActions.style.display='none';note.textContent='追加はiPhoneショートカットに接続する工程です。';sheet.classList.add('on')}
-function openEdit(c){editing=c;sheetTitle.textContent='No.'+String(c.id).padStart(3,'0')+' を編集';name.value=(c.name||'').replace(/^No\.\[?\d+\]?｜/,'');setChips(c.tags);save.textContent='変更を保存';editActions.style.display='flex';note.textContent='名前・タグを変更して「変更を保存」。';sheet.classList.add('on')}
-search.oninput=render;open.onclick=openAdd;cancel.onclick=()=>sheet.classList.remove('on');
-document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>b.classList.toggle('on'));
-save.onclick=()=>{
- if(!editing){note.textContent='追加は既存の追加ショートカットに接続予定です。';return}
- var tags=[...document.querySelectorAll('.chip.on')].map(b=>b.dataset.tag);
- var clean=(name.value||'').trim(); if(!clean){note.textContent='衣装名を入力してね';return}
- var payload={action:'edit',id:Number(editing.id),name:clean,tags:tags};
- var url='shortcuts://run-shortcut?name='+encodeURIComponent('PAMI Costume Admin 開発用')+'&input=text&text='+encodeURIComponent(JSON.stringify(payload));
- note.textContent='ショートカットへ送信中…'; location.href=url;
-};
+function setChips(tags){let a=normTags(tags);document.querySelectorAll('.chip').forEach(b=>b.classList.toggle('on',a.includes(b.dataset.tag)))}
+function openAdd(){editing=null;$('sheetTitle').textContent='衣装を追加';$('costumeName').value='';$('photo').value='';setChips([]);$('save').textContent='追加';$('editActions').style.display='none';$('note').textContent='追加はiPhoneショートカットに接続する工程です。';$('sheet').classList.add('on')}
+function openEdit(c){editing=c;$('sheetTitle').textContent='No.'+String(c.id).padStart(3,'0')+' を編集';let n=String(c.name||'').replace(/^No\.\[?\d+\]?｜\[?/,'').replace(/\]$/,'');$('costumeName').value=n;setChips(c.tags);$('save').textContent='変更を保存';$('editActions').style.display='flex';$('note').textContent='名前・タグを変更して「変更を保存」。';$('sheet').classList.add('on')}
+$('search').oninput=render;$('open').onclick=openAdd;$('cancel').onclick=()=>$('sheet').classList.remove('on');document.querySelectorAll('.chip').forEach(b=>b.onclick=()=>b.classList.toggle('on'));
+$('save').onclick=()=>{if(!editing){$('note').textContent='追加は既存の追加ショートカットに接続予定です。';return}let tags=[...document.querySelectorAll('.chip.on')].map(b=>b.dataset.tag),clean=$('costumeName').value.trim();if(!clean){$('note').textContent='衣装名を入力してね';return}let payload={action:'edit',id:Number(editing.id),name:clean,tags};location.href='shortcuts://run-shortcut?name='+encodeURIComponent('PAMI Costume Admin 開発用')+'&input=text&text='+encodeURIComponent(JSON.stringify(payload))};
 </script></body></html>
