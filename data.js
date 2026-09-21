@@ -19,7 +19,7 @@
   var base=get('data-base.js?v=20260916');
   if(base) (0,eval)(base); else window.COSTUMES=[];
   try{
-    var custom=JSON.parse(get('custom-data.json?v=20260921')||'[]');
+    var custom=JSON.parse(get('custom-data.json?v='+Date.now())||'[]');
     Array.prototype.push.apply(window.COSTUMES,custom);
   }catch(e){}
 
