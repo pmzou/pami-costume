@@ -27,11 +27,19 @@
   if(grid){
     for(var i=0;i<window.COSTUMES.length;i++){
       var c=window.COSTUMES[i];
-      if(c.id<=100 || !c.image) continue;
+      if(Number(c.id)<=100 || !c.image) continue;
       var card=document.createElement('article'); card.className='card';
       var imageSrc=c.image+(c.imageVersion?'?v='+encodeURIComponent(c.imageVersion):'');
       card.innerHTML='<img class="photo" src="'+imageSrc+'" alt="'+c.name+'" loading="lazy"><div class="name"></div><div class="tags"></div>';
       grid.appendChild(card);
     }
+  }
+  // Re-run metadata binding after dynamically adding custom cards.
+  var cards=document.querySelectorAll('.card');
+  for(var j=0;j<window.COSTUMES.length&&j<cards.length;j++){
+    var item=window.COSTUMES[j], el=cards[j];
+    if(item.visible===false || item.visible==='false'){el.style.display='none';continue;}
+    var n=el.querySelector('.name'); if(n)n.textContent=item.name||'';
+    var t=el.querySelector('.tags'); if(t){t.innerHTML=''; var tags=Array.isArray(item.tags)?item.tags:(item.tags?[item.tags]:[]); for(var k=0;k<tags.length;k++){var s=document.createElement('span');s.className='tag';s.textContent=({fullback:'フルバック',tback:'Tバック',character:'キャラクター',other:'その他'})[tags[k]]||tags[k];t.appendChild(s);}}
   }
 })();
