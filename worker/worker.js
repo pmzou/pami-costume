@@ -7,17 +7,27 @@ function b64(bytes){let s="";for(let i=0;i<bytes.length;i+=8192)s+=String.fromCh
 function utf8b64(s){return b64(new TextEncoder().encode(s))}
 function decode(s){return new TextDecoder().decode(Uint8Array.from(atob(s.replace(/\s/g,"")),c=>c.charCodeAt(0)))}
 function validTags(t){return Array.isArray(t)&&t.length<=4&&new Set(t).size===t.length&&t.every(x=>allowedTags.has(x))}
+// Signed, 12-hour bearer token. No password or GitHub credential is sent to the browser.
+function base64url(bytes){return b64(bytes).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
+function fromBase64url(s){return Uint8Array.from(atob(s.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0))}
+async function signingKey(env){return crypto.subtle.importKey("raw",new TextEncoder().encode(env.ADMIN_PASSWORD+":"+env.GITHUB_TOKEN),{name:"HMAC",hash:"SHA-256"},false,["sign","verify"])}
+async function issueToken(env){const payload=base64url(new TextEncoder().encode(JSON.stringify({exp:Date.now()+12*60*60*1000,nonce:crypto.randomUUID()})));const sig=base64url(new Uint8Array(await crypto.subtle.sign("HMAC",await signingKey(env),new TextEncoder().encode(payload))));return payload+"."+sig}
+async function validToken(env,token){try{if(!token||token.length>1024)return false;const parts=token.split(".");if(parts.length!==2)return false;const data=JSON.parse(new TextDecoder().decode(fromBase64url(parts[0])));if(typeof data.exp!=="number"||data.exp<=Date.now()||data.exp>Date.now()+12*60*60*1000)return false;return crypto.subtle.verify("HMAC",await signingKey(env),fromBase64url(parts[1]),new TextEncoder().encode(parts[0]))}catch{return false}}
 export default {async fetch(request,env){
- const cors={"Access-Control-Allow-Origin":ORIGIN,"Access-Control-Allow-Methods":"GET, POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type, X-Admin-Password","Vary":"Origin","Cache-Control":"no-store"};
+ const cors={"Access-Control-Allow-Origin":ORIGIN,"Access-Control-Allow-Methods":"GET, POST, OPTIONS","Access-Control-Allow-Headers":"Content-Type, X-Admin-Password, Authorization","Vary":"Origin","Cache-Control":"no-store"};
  const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{...cors,"Content-Type":"application/json; charset=utf-8"}});
  const origin=request.headers.get("Origin"),url=new URL(request.url);
  if(request.method==="OPTIONS")return origin===ORIGIN?new Response(null,{status:204,headers:cors}):json({error:"Origin not allowed"},403);
- if(request.method==="GET"&&url.pathname==="/health")return json({ok:true,service:"pami-costume-api",features:["update","add","replace","visibility","auth"]});
- if(request.method!=="POST"||!["/update","/add","/replace","/visibility","/auth"].includes(url.pathname))return json({error:"Not found"},404);
+ if(request.method==="GET"&&url.pathname==="/health")return json({ok:true,service:"pami-costume-api",features:["update","add","replace","visibility","auth","session"]});
+ if(request.method!=="POST"||!["/update","/add","/replace","/visibility","/auth","/session"].includes(url.pathname))return json({error:"Not found"},404);
  if(origin!==ORIGIN)return json({error:"Origin not allowed"},403);
  if(!env.GITHUB_TOKEN||!env.ADMIN_PASSWORD)return json({error:"Server configuration missing"},500);
- if(request.headers.get("X-Admin-Password")!==env.ADMIN_PASSWORD)return json({error:"Incorrect password"},401);
- if(url.pathname==="/auth")return json({ok:true});
+ if(url.pathname==="/auth"){
+  if(request.headers.get("X-Admin-Password")!==env.ADMIN_PASSWORD)return json({error:"Incorrect password"},401);
+  return json({ok:true,token:await issueToken(env),expiresIn:43200});
+ }
+ if(url.pathname==="/session")return await validToken(env,request.headers.get("Authorization")?.replace(/^Bearer /,""))?json({ok:true}):json({error:"Session expired"},401);
+ if(!await validToken(env,request.headers.get("Authorization")?.replace(/^Bearer /,"")))return json({error:"Session expired"},401);
  const headers={"Authorization":"Bearer "+env.GITHUB_TOKEN,"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"pami-costume-api"};
  async function read(path){const r=await fetch(gh+path,{headers,cache:"no-store"});if(!r.ok)throw Error("GitHub read failed: "+r.status);return r.json()}
  async function put(path,content,sha,message){const r=await fetch(gh+path,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({message,content,...(sha?{sha}:{})})});if(!r.ok)throw Error("GitHub write failed: "+r.status);return r.json()}
