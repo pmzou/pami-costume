@@ -42,7 +42,9 @@
   {
     "id": 105,
     "imageVersion": 1,
-    "tags": "fullback",
+    "tags": [
+      "fullback"
+    ],
     "name": "No.105｜arena 競泳水着 赤×黒",
     "image": "images/105.jpg",
     "visible": true
