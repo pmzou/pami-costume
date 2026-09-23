@@ -12,11 +12,12 @@ export default {async fetch(request,env){
  const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{...cors,"Content-Type":"application/json; charset=utf-8"}});
  const origin=request.headers.get("Origin"),url=new URL(request.url);
  if(request.method==="OPTIONS")return origin===ORIGIN?new Response(null,{status:204,headers:cors}):json({error:"Origin not allowed"},403);
- if(request.method==="GET"&&url.pathname==="/health")return json({ok:true,service:"pami-costume-api",features:["update","add","replace"]});
- if(request.method!=="POST"||!["/update","/add","/replace"].includes(url.pathname))return json({error:"Not found"},404);
+ if(request.method==="GET"&&url.pathname==="/health")return json({ok:true,service:"pami-costume-api",features:["update","add","replace","visibility","auth"]});
+ if(request.method!=="POST"||!["/update","/add","/replace","/visibility","/auth"].includes(url.pathname))return json({error:"Not found"},404);
  if(origin!==ORIGIN)return json({error:"Origin not allowed"},403);
  if(!env.GITHUB_TOKEN||!env.ADMIN_PASSWORD)return json({error:"Server configuration missing"},500);
  if(request.headers.get("X-Admin-Password")!==env.ADMIN_PASSWORD)return json({error:"Incorrect password"},401);
+ if(url.pathname==="/auth")return json({ok:true});
  const headers={"Authorization":"Bearer "+env.GITHUB_TOKEN,"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"pami-costume-api"};
  async function read(path){const r=await fetch(gh+path,{headers,cache:"no-store"});if(!r.ok)throw Error("GitHub read failed: "+r.status);return r.json()}
  async function put(path,content,sha,message){const r=await fetch(gh+path,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({message,content,...(sha?{sha}:{})})});if(!r.ok)throw Error("GitHub write failed: "+r.status);return r.json()}
@@ -24,10 +25,17 @@ export default {async fetch(request,env){
   const body=await request.text();if(body.length>9000000)return json({error:"Request too large"},413);
   const input=JSON.parse(body),action=url.pathname.slice(1);
   if(action!=="add"&&(!Number.isSafeInteger(input.id)||input.id<1))return json({error:"Invalid ID"},400);
-  if(action!=="replace"&&(!input.name||typeof input.name!=="string"||!input.name.trim()||input.name.length>200||!validTags(input.tags)))return json({error:"Invalid name or tags"},400);
-  if(action!=="update"&&(!input.image||typeof input.image!=="string"||input.image.length>8500000||!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(input.image)))return json({error:"Invalid image (JPEG, PNG or WebP only)"},400);
+  if(action!=="replace"&&action!=="visibility"&&(!input.name||typeof input.name!=="string"||!input.name.trim()||input.name.length>200||!validTags(input.tags)))return json({error:"Invalid name or tags"},400);
+  if(action!=="update"&&action!=="visibility"&&(!input.image||typeof input.image!=="string"||input.image.length>8500000||!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(input.image)))return json({error:"Invalid image (JPEG, PNG or WebP only)"},400);
   const dataFile=await read(DATA),data=JSON.parse(decode(dataFile.content));
   if(!Array.isArray(data))return json({error:"Unexpected data format"},500);
+  if(action==="visibility"){
+   if(typeof input.visible!=="boolean")return json({error:"Invalid visibility"},400);
+   const item=data.find(x=>Number(x.id)===input.id);if(!item)return json({error:"Costume not found"},404);
+   item.visible=input.visible;
+   await put(DATA,utf8b64(JSON.stringify(data,null,2)+"\n"),dataFile.sha,(input.visible?"Show":"Hide")+" costume No."+input.id+" via admin");
+   return json({ok:true,item});
+  }
   if(action==="update"){
    const item=data.find(x=>Number(x.id)===input.id);if(!item)return json({error:"Costume not found"},404);
    item.name=input.name.trim();item.tags=input.tags;
