@@ -380,9 +380,11 @@
   },
   {
     "id": 47,
-    "name": "No.047｜衣装 47",
+    "name": "No.047｜M企画 セーラージャージ",
     "tags": [
-      "character"
+      "fullback",
+      "tback",
+      "other"
     ],
     "visible": true
   },
