@@ -180,9 +180,10 @@
   },
   {
     "id": 23,
-    "name": "No.023｜衣装 23",
+    "name": "No.023｜ドレス 白",
     "tags": [
-      "character"
+      "fullback",
+      "other"
     ],
     "visible": true
   },
