@@ -9,7 +9,8 @@
     '.grid{column-gap:8px;row-gap:16px}.photo{aspect-ratio:3/4;object-fit:cover;border-radius:7px;background:#f1f1f1}'+
     '.name{color:var(--pami-ink);font-size:11px;font-weight:600;margin:6px 1px 0;line-height:1.25}.tags{gap:3px;margin-top:6px}'+
     '.tag{font-size:8px;background:var(--pami-tag);color:var(--pami-muted);padding:2px 5px;border-radius:999px}'+
-    '@media(pointer:coarse){.filters button{min-height:44px;padding-top:7px;padding-bottom:7px}}';
+    '@media(pointer:coarse){.filters button{min-height:44px;padding-top:7px;padding-bottom:7px}}'+
+    '@media(min-width:900px){.wrap{max-width:1440px!important;padding-left:24px!important;padding-right:24px!important}.grid{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:20px 12px!important}.grid .card{min-width:0!important;width:auto!important;max-width:none!important}.grid .photo{width:100%!important;height:auto!important;aspect-ratio:3/4!important;object-fit:cover!important}}';
   document.head.appendChild(style);
 
   function get(url){
