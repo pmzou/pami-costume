@@ -18,9 +18,17 @@
   }
   var base=get('data-base.js?v=20260916');
   if(base) (0,eval)(base); else window.COSTUMES=[];
+  var byId={};
+  for(var i=0;i<window.COSTUMES.length;i++)byId[Number(window.COSTUMES[i].id)]=i;
   try{
     var custom=JSON.parse(get('custom-data.json?v='+Date.now())||'[]');
-    Array.prototype.push.apply(window.COSTUMES,custom);
+    for(var i=0;i<custom.length;i++){
+      var c=custom[i],id=Number(c.id);
+      if(Object.prototype.hasOwnProperty.call(byId,id)){
+        var old=window.COSTUMES[byId[id]];
+        window.COSTUMES[byId[id]]=Object.assign({},old,c);
+      }else{byId[id]=window.COSTUMES.length;window.COSTUMES.push(c);}
+    }
   }catch(e){}
 
   var grid=document.querySelector('.grid');
@@ -28,20 +36,21 @@
     for(var i=0;i<window.COSTUMES.length;i++){
       var c=window.COSTUMES[i];
       if(Number(c.id)<=100 || !c.image) continue;
-      var card=document.createElement('article'); card.className='card';
-      var imageSrc=c.image+(c.imageVersion?'?v='+encodeURIComponent(c.imageVersion):'');
-      card.innerHTML='<img class="photo" src="'+imageSrc+'" alt="'+c.name+'" loading="lazy"><div class="name"></div><div class="tags"></div>';
+      var card=document.createElement('article');card.className='card';
+      card.innerHTML='<img class="photo" alt="" loading="lazy"><div class="name"></div><div class="tags"></div>';
       grid.appendChild(card);
     }
   }
-  // Re-run metadata binding after dynamically adding custom cards.
   var cards=document.querySelectorAll('.card');
   for(var j=0;j<window.COSTUMES.length&&j<cards.length;j++){
-    var item=window.COSTUMES[j], el=cards[j];
-    if(item.visible===false || item.visible==='false'){el.style.display='none';continue;}
-    var n=el.querySelector('.name'); if(n)n.textContent=item.name||'';
-    var normTags=Array.isArray(item.tags)?item.tags:(item.tags?[item.tags]:[]); el.setAttribute('data-tags',normTags.join(' '));
-    var t=el.querySelector('.tags'); if(t){t.innerHTML=''; var tags=normTags; for(var k=0;k<tags.length;k++){var s=document.createElement('span');s.className='tag';s.textContent=({fullback:'フルバック',tback:'Tバック',character:'キャラクター',other:'その他'})[tags[k]]||tags[k];t.appendChild(s);}}
+    var item=window.COSTUMES[j],el=cards[j];
+    if(item.visible===false||item.visible==='false'){el.style.display='none';continue;}
+    var photo=el.querySelector('img.photo');
+    if(photo&&item.image)photo.src=item.image+(item.imageVersion?'?v='+encodeURIComponent(item.imageVersion):'');
+    var n=el.querySelector('.name');if(n)n.textContent=item.name||'';
+    var normTags=Array.isArray(item.tags)?item.tags:(item.tags?[item.tags]:[]);
+    el.setAttribute('data-tags',normTags.join(' '));
+    var t=el.querySelector('.tags');if(t){t.innerHTML='';for(var k=0;k<normTags.length;k++){var span=document.createElement('span');span.className='tag';span.textContent=({fullback:'フルバック',tback:'Tバック',character:'キャラクター',other:'その他'})[normTags[k]]||normTags[k];t.appendChild(span);}}
   }
   // Bind filters again so dynamically added cards participate too.
   var buttons=document.querySelectorAll('.filters button');
