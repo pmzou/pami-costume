@@ -64,12 +64,13 @@ export default {async fetch(request,env){
    const check=await fetch(gh+path,{headers});if(check.ok)return json({error:"Image filename already exists; no data changed"},409);
    if(check.status!==404)return json({error:"Cannot check image filename",status:check.status},502);
   }else{
-   if(item.image!==path)return json({error:"Image format differs from existing file; use "+item.image.split(".").pop().toUpperCase()+" format for replacement"},400);
-   oldImage=await read(path);
+   if(item.image&&item.image!==path)return json({error:"Image format differs from existing file; use "+item.image.split(".").pop().toUpperCase()+" format for replacement"},400);
+   if(item.image)oldImage=await read(path);
+   else{const check=await fetch(gh+path,{headers});if(check.ok)return json({error:"Image filename already exists; check GitHub before replacing"},409);if(check.status!==404)return json({error:"Cannot check image filename",status:check.status},502);}
   }
   await put(path,raw,oldImage?.sha,action==="add"?"Add costume image No."+id:"Replace costume image No."+id);
   if(action==="add")data.push({id,name:"No."+String(id).padStart(3,"0")+"｜"+input.name.trim().replace(/^No\.\d+｜/,""),tags:input.tags,image:path,imageVersion:1,visible:true});
-  else item.imageVersion=(Number(item.imageVersion)||1)+1;
+  else{item.image=path;item.imageVersion=(Number(item.imageVersion)||0)+1;}
   try{await put(DATA,utf8b64(JSON.stringify(data,null,2)+"\n"),dataFile.sha,(action==="add"?"Add":"Refresh")+" costume No."+id+" via admin")}
   catch(e){return json({error:"Image uploaded, but data update failed. Do not retry blindly; check GitHub first. "+e.message},409)}
   return json({ok:true,item:action==="add"?data[data.length-1]:item});
