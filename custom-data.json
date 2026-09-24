@@ -207,9 +207,11 @@
   },
   {
     "id": 26,
-    "name": "No.026｜衣装 26",
+    "name": "No.026｜チャイナドレス 黒",
     "tags": [
-      "character"
+      "fullback",
+      "tback",
+      "other"
     ],
     "visible": true
   },
