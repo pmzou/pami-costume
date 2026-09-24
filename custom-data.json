@@ -197,9 +197,11 @@
   },
   {
     "id": 25,
-    "name": "No.025｜衣装 25",
+    "name": "No.025｜チャイナドレス 白",
     "tags": [
-      "character"
+      "fullback",
+      "tback",
+      "other"
     ],
     "visible": true
   },
