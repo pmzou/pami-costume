@@ -275,9 +275,10 @@
   },
   {
     "id": 34,
-    "name": "No.034｜衣装 34",
+    "name": "No.034｜ボンテージ 黒",
     "tags": [
-      "character"
+      "fullback",
+      "tback"
     ],
     "visible": true
   },
