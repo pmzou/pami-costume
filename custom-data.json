@@ -82,9 +82,11 @@
   },
   {
     "id": 11,
-    "name": "No.011｜衣装 11",
+    "name": "No.011｜M企画 干支 白蛇ちゃん",
     "tags": [
-      "character"
+      "fullback",
+      "tback",
+      "other"
     ],
     "visible": true
   },
