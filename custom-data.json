@@ -893,5 +893,15 @@
     "name": "No.107｜speedo 競泳水着 ラベンダー",
     "image": "images/107.jpg",
     "visible": true
+  },
+  {
+    "id": 108,
+    "name": "No.108｜DOMORE マイクロビキニ グリッターベージュ",
+    "tags": [
+      "tback"
+    ],
+    "image": "images/108.jpg",
+    "imageVersion": 1,
+    "visible": true
   }
 ]
