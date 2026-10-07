@@ -27,13 +27,15 @@ export default {async fetch(request,env){
   return json({ok:true,token:await issueToken(env),expiresIn:43200});
  }
  if(url.pathname==="/session")return await validToken(env,request.headers.get("Authorization")?.replace(/^Bearer /,""))?json({ok:true}):json({error:"Session expired"},401);
- if(!await validToken(env,request.headers.get("Authorization")?.replace(/^Bearer /,"")))return json({error:"Session expired"},401);
  const headers={"Authorization":"Bearer "+env.GITHUB_TOKEN,"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"pami-costume-api"};
  async function read(path){const r=await fetch(gh+path,{headers,cache:"no-store"});if(!r.ok)throw Error("GitHub read failed: "+r.status);return r.json()}
  async function put(path,content,sha,message){const r=await fetch(gh+path,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({message,content,...(sha?{sha}:{})})});if(!r.ok)throw Error("GitHub write failed: "+r.status);return r.json()}
  try{
   const body=await request.text();if(body.length>9000000)return json({error:"Request too large"},413);
   const input=JSON.parse(body),action=url.pathname.slice(1);
+  const bearer=request.headers.get("Authorization")?.replace(/^Bearer /,""),bodyToken=typeof input._token==="string"?input._token:"";
+  if(!await validToken(env,bearer||bodyToken))return json({error:"Session expired"},401);
+  delete input._token;
   if(action!=="add"&&(!Number.isSafeInteger(input.id)||input.id<1))return json({error:"Invalid ID"},400);
   if(action!=="replace"&&action!=="visibility"&&(!input.name||typeof input.name!=="string"||!input.name.trim()||input.name.length>200||!validTags(input.tags)))return json({error:"Invalid name or tags"},400);
   if(action!=="update"&&action!=="visibility"&&(!input.image||typeof input.image!=="string"||input.image.length>8500000||!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(input.image)))return json({error:"Invalid image (JPEG, PNG or WebP only)"},400);
