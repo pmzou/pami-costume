@@ -31,14 +31,33 @@ export default {async fetch(request,env){
  async function read(path){const r=await fetch(gh+path,{headers,cache:"no-store"});if(!r.ok)throw Error("GitHub read failed: "+r.status);return r.json()}
  async function put(path,content,sha,message){const r=await fetch(gh+path,{method:"PUT",headers:{...headers,"Content-Type":"application/json"},body:JSON.stringify({message,content,...(sha?{sha}:{})})});if(!r.ok)throw Error("GitHub write failed: "+r.status);return r.json()}
  try{
-  const body=await request.text();if(body.length>9000000)return json({error:"Request too large"},413);
-  const input=JSON.parse(body),action=url.pathname.slice(1);
+  const action=url.pathname.slice(1),contentType=request.headers.get("Content-Type")||"";
+  let input={},uploadBytes=null,uploadType="";
+  if(contentType.startsWith("multipart/form-data")){
+   const form=await request.formData();
+   input._token=String(form.get("_token")||"");
+   if(form.has("id"))input.id=Number(form.get("id"));
+   if(form.has("name"))input.name=String(form.get("name")||"");
+   if(form.has("tags")){try{input.tags=JSON.parse(String(form.get("tags")||"[]"))}catch{input.tags=[]}}
+   const file=form.get("image");
+   if(file&&typeof file.arrayBuffer==="function"){uploadBytes=new Uint8Array(await file.arrayBuffer());uploadType=String(file.type||"")}
+  }else{
+   const body=await request.text();if(body.length>9000000)return json({error:"Request too large"},413);
+   input=JSON.parse(body);
+  }
   const bearer=request.headers.get("Authorization")?.replace(/^Bearer /,""),bodyToken=typeof input._token==="string"?input._token:"";
   if(!await validToken(env,bearer||bodyToken))return json({error:"Session expired"},401);
   delete input._token;
   if(action!=="add"&&(!Number.isSafeInteger(input.id)||input.id<1))return json({error:"Invalid ID"},400);
   if(action!=="replace"&&action!=="visibility"&&(!input.name||typeof input.name!=="string"||!input.name.trim()||input.name.length>200||!validTags(input.tags)))return json({error:"Invalid name or tags"},400);
-  if(action!=="update"&&action!=="visibility"&&(!input.image||typeof input.image!=="string"||input.image.length>8500000||!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(input.image)))return json({error:"Invalid image (JPEG, PNG or WebP only)"},400);
+  if(action!=="update"&&action!=="visibility"){
+   if(uploadBytes){
+    if(!["image/jpeg","image/png","image/webp"].includes(uploadType))return json({error:"Invalid image (JPEG, PNG or WebP only)"},400);
+    if(uploadBytes.length>5500000)return json({error:"Image exceeds 5.5 MB"},413);
+   }else if(!input.image||typeof input.image!=="string"||input.image.length>8500000||!/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(input.image)){
+    return json({error:"Invalid image (JPEG, PNG or WebP only)"},400);
+   }
+  }
   const dataFile=await read(DATA),data=JSON.parse(decode(dataFile.content));
   if(!Array.isArray(data))return json({error:"Unexpected data format"},500);
   if(action==="visibility"){
@@ -57,9 +76,11 @@ export default {async fetch(request,env){
   const id=action==="add"?Math.max(100,...data.map(x=>Number(x.id)||0))+1:input.id;
   const item=action==="replace"?data.find(x=>Number(x.id)===id):null;
   if(action==="replace"&&!item)return json({error:"Costume not found"},404);
-  const m=input.image.match(/^data:image\/(jpeg|png|webp);base64,(.+)$/),raw=m[2],bytes=Uint8Array.from(atob(raw),c=>c.charCodeAt(0));
+  let raw,bytes,mime;
+  if(uploadBytes){bytes=uploadBytes;mime=uploadType;raw=b64(bytes)}
+  else{const m=input.image.match(/^data:image\/(jpeg|png|webp);base64,(.+)$/);raw=m[2];bytes=Uint8Array.from(atob(raw),c=>c.charCodeAt(0));mime="image/"+m[1]}
   if(bytes.length>5500000)return json({error:"Image exceeds 5.5 MB"},413);
-  const ext=m[1]==="jpeg"?"jpg":m[1],path="images/"+id+"."+ext;
+  const ext=mime==="image/jpeg"?"jpg":mime==="image/png"?"png":"webp",path="images/"+id+"."+ext;
   // Do not overwrite an existing image during addition.
   let oldImage=null;
   if(action==="add"){
