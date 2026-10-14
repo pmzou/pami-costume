@@ -935,5 +935,15 @@
     "image": "images/111.jpg",
     "imageVersion": 1,
     "visible": true
+  },
+  {
+    "id": 112,
+    "name": "No.112｜ビキニ ニットオレンジ",
+    "tags": [
+      "tback"
+    ],
+    "image": "images/112.jpg",
+    "imageVersion": 1,
+    "visible": true
   }
 ]
