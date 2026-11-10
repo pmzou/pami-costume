@@ -955,5 +955,16 @@
     "image": "images/113.jpg",
     "imageVersion": 1,
     "visible": true
+  },
+  {
+    "id": 114,
+    "name": "No.114｜サムスピ　いろは",
+    "tags": [
+      "tback",
+      "character"
+    ],
+    "image": "images/114.jpg",
+    "imageVersion": 1,
+    "visible": true
   }
 ]
