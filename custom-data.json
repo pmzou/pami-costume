@@ -966,5 +966,18 @@
     "image": "images/114.jpg",
     "imageVersion": 1,
     "visible": true
+  },
+  {
+    "id": 115,
+    "name": "No.115｜ロングメイド服",
+    "tags": [
+      "fullback",
+      "tback",
+      "character",
+      "other"
+    ],
+    "image": "images/115.jpg",
+    "imageVersion": 1,
+    "visible": true
   }
 ]
